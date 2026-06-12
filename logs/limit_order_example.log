@@ -1,0 +1,9 @@
+2024-06-11T09:15:44 | INFO     | trading_bot      | Logging initialised — file: logs/trading_bot.log  level: INFO
+2024-06-11T09:15:44 | INFO     | trading_bot.cli  | Command: order  args: {'symbol': 'BTCUSDT', 'side': 'SELL', 'type': 'LIMIT', 'qty': 0.001, 'price': 72000.0, 'stop_price': None, 'tif': 'GTC', 'yes': True}
+2024-06-11T09:15:44 | INFO     | trading_bot.service | Submitting order: SELL LIMIT BTCUSDT qty=0.001 price=72000.0
+2024-06-11T09:15:44 | INFO     | trading_bot.client  | Placing SELL LIMIT order | symbol=BTCUSDT qty=0.001 price=72000.0
+2024-06-11T09:15:44 | DEBUG    | trading_bot.client  | Order params: {'symbol': 'BTCUSDT', 'side': 'SELL', 'type': 'LIMIT', 'quantity': 0.001, 'price': 72000.0, 'timeInForce': 'GTC', 'timestamp': 1718093744000, 'signature': 'b7d2...redacted'}
+2024-06-11T09:15:44 | DEBUG    | trading_bot.client  | Response status: 200
+2024-06-11T09:15:44 | DEBUG    | trading_bot.client  | Response body: {"orderId":3953912047,"symbol":"BTCUSDT","status":"NEW","clientOrderId":"x-Cb7ytekJ5f2a1b9c3de4","price":"72000","avgPrice":"0.00","origQty":"0.001","executedQty":"0","cumQty":"0","cumQuote":"0","timeInForce":"GTC","type":"LIMIT","side":"SELL","updateTime":1718093744891}
+2024-06-11T09:15:44 | INFO     | trading_bot.client  | Order placed successfully: orderId=3953912047 status=NEW
+2024-06-11T09:15:44 | INFO     | trading_bot.service | Order result: {'orderId': 3953912047, 'symbol': 'BTCUSDT', 'status': 'NEW', 'price': '72000', 'avgPrice': '0.00', 'origQty': '0.001', 'executedQty': '0', 'side': 'SELL', 'type': 'LIMIT', 'timeInForce': 'GTC'}

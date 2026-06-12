@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Bot — Binance Futures Testnet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:        #0b0e11;
+    --surface:   #151a20;
+    --border:    #1e2730;
+    --accent:    #f0b90b;
+    --accent-dim:#b38a08;
+    --green:     #0ecb81;
+    --red:       #f6465d;
+    --text:      #eaecef;
+    --muted:     #848e9c;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .testnet-badge {
+    background: rgba(240,185,11,0.12);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(240,185,11,0.25);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Balance bar ── */
+  .balance-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .balance-item { display: flex; flex-direction: column; gap: 2px; }
+  .balance-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .balance-value { font-family: var(--mono); font-size: 16px; font-weight: 600; }
+  .balance-value.green { color: var(--green); }
+  .balance-value.red   { color: var(--red); }
+
+  .refresh-btn {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Main layout ── */
+  main {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 0;
+    height: calc(100vh - 113px);
+  }
+
+  /* ── Order Form Panel ── */
+  .form-panel {
+    border-right: 1px solid var(--border);
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* Price ticker */
+  .price-ticker {
+    background: var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ticker-symbol { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .ticker-price  { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--accent); }
+
+  /* Side toggle */
+  .side-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .side-btn {
+    padding: 12px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.15s;
+    background: var(--surface);
+    color: var(--muted);
+  }
+
+  .side-btn.buy.active  { background: var(--green); color: #000; }
+  .side-btn.sell.active { background: var(--red);   color: #fff; }
+  .side-btn:hover:not(.active) { background: var(--border); color: var(--text); }
+
+  /* Type tabs */
+  .type-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--border);
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .type-tab {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .type-tab.active { background: var(--surface); color: var(--text); }
+  .type-tab:hover:not(.active) { color: var(--text); }
+
+  /* Form fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  .field input, .field select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .submit-btn.buy  { background: var(--green); color: #000; }
+  .submit-btn.sell { background: var(--red);   color: #fff; }
+  .submit-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── History Panel ── */
+  .history-panel {
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .clear-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--sans);
+    transition: all 0.15s;
+  }
+  .clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* Order cards */
+  .order-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: start;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .order-card.buy-card  { border-left: 3px solid var(--green); }
+  .order-card.sell-card { border-left: 3px solid var(--red); }
+  .order-card.error-card { border-left: 3px solid var(--red); background: rgba(246,70,93,0.06); }
+
+  .order-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .order-icon.buy  { background: rgba(14,203,129,0.15); }
+  .order-icon.sell { background: rgba(246,70,93,0.15); }
+  .order-icon.err  { background: rgba(246,70,93,0.15); }
+
+  .order-info { display: flex; flex-direction: column; gap: 4px; }
+
+  .order-title {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .order-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+
+  .badge-filled  { background: rgba(14,203,129,0.15); color: var(--green); }
+  .badge-new     { background: rgba(240,185,11,0.15);  color: var(--accent); }
+  .badge-error   { background: rgba(246,70,93,0.15);   color: var(--red); }
+
+  .order-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .order-meta span { display: flex; flex-direction: column; gap: 1px; }
+  .order-meta .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .order-meta .meta-val   { color: var(--text); font-size: 13px; }
+
+  .order-time {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+
+  /* Empty state */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    gap: 12px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 40px; opacity: 0.3; }
+  .empty-text { font-size: 14px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 100;
+    animation: toastIn 0.3s ease;
+    max-width: 360px;
+  }
+
+  .toast.success { background: var(--green); color: #000; }
+  .toast.error   { background: var(--red);   color: #fff; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Loading spinner */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Trading Bot
+  </div>
+  <span class="testnet-badge">TESTNET</span>
+</header>
+
+<!-- Balance Bar -->
+<div class="balance-bar" id="balanceBar">
+  <div class="balance-item">
+    <span class="balance-label">Available Balance</span>
+    <span class="balance-value" id="balAvailable">—</span>
+  </div>
+  <div class="balance-item">
+    <span class="balance-label">Wallet Balance</span>
+    <span class="balance-value" id="balWallet">—</span>
+  </div>
+  <div class="balance-item">
+    <span class="balance-label">Unrealised PnL</span>
+    <span class="balance-value" id="balPnl">—</span>
+  </div>
+  <button class="refresh-btn" onclick="loadBalance()">⟳ Refresh</button>
+</div>
+
+<!-- Main -->
+<main>
+
+  <!-- Order Form -->
+  <div class="form-panel">
+    <div class="panel-title">Place Order</div>
+
+    <!-- Price Ticker -->
+    <div class="price-ticker">
+      <span class="ticker-symbol" id="tickerSymbol">BTCUSDT</span>
+      <span class="ticker-price" id="tickerPrice">Loading...</span>
+    </div>
+
+    <!-- Side Toggle -->
+    <div class="side-toggle">
+      <button class="side-btn buy active" onclick="setSide('BUY')">▲ BUY / LONG</button>
+      <button class="side-btn sell" onclick="setSide('SELL')">▼ SELL / SHORT</button>
+    </div>
+
+    <!-- Order Type Tabs -->
+    <div class="type-tabs">
+      <button class="type-tab active" onclick="setType('MARKET')">Market</button>
+      <button class="type-tab" onclick="setType('LIMIT')">Limit</button>
+      <button class="type-tab" onclick="setType('STOP')">Stop</button>
+    </div>
+
+    <!-- Symbol -->
+    <div class="field">
+      <label>Symbol</label>
+      <input type="text" id="symbol" value="BTCUSDT" placeholder="e.g. BTCUSDT"
+             oninput="this.value=this.value.toUpperCase(); updateTicker()">
+    </div>
+
+    <!-- Quantity -->
+    <div class="field">
+      <label>Quantity</label>
+      <input type="number" id="quantity" placeholder="e.g. 0.001" step="0.001" min="0">
+      <span class="field-hint">Amount in base asset (BTC, ETH…)</span>
+    </div>
+
+    <!-- Limit Price (hidden for MARKET) -->
+    <div class="field" id="priceField">
+      <label>Limit Price (USDT)</label>
+      <input type="number" id="price" placeholder="e.g. 65000" step="0.01" min="0">
+    </div>
+
+    <!-- Stop Price (only for STOP) -->
+    <div class="field hidden" id="stopPriceField">
+      <label>Stop Trigger Price (USDT)</label>
+      <input type="number" id="stopPrice" placeholder="e.g. 64000" step="0.01" min="0">
+      <span class="field-hint">Order triggers when price hits this level</span>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn buy" id="submitBtn" onclick="placeOrder()">
+      Place BUY Order
+    </button>
+  </div>
+
+  <!-- Order History -->
+  <div class="history-panel">
+    <div class="history-header">
+      <div class="panel-title">Order History</div>
+      <button class="clear-btn" onclick="clearHistory()">Clear</button>
+    </div>
+
+    <div id="orderHistory">
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">No orders yet — place your first order</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  let currentSide = 'BUY';
+  let currentType = 'MARKET';
+  let priceInterval = null;
+
+  // ── Init ──────────────────────────────────────────
+  window.onload = () => {
+    loadBalance();
+    loadPrice();
+    priceInterval = setInterval(loadPrice, 10000);
+  };
+
+  // ── Balance ───────────────────────────────────────
+  async function loadBalance() {
+    try {
+      const res = await fetch('/api/account');
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('balAvailable').textContent =
+          parseFloat(data.available).toFixed(2) + ' USDT';
+        document.getElementById('balWallet').textContent =
+          parseFloat(data.wallet).toFixed(2) + ' USDT';
+        const pnl = parseFloat(data.pnl);
+        const pnlEl = document.getElementById('balPnl');
+        pnlEl.textContent = (pnl >= 0 ? '+' : '') + pnl.toFixed(4) + ' USDT';
+        pnlEl.className = 'balance-value ' + (pnl >= 0 ? 'green' : 'red');
+      }
+    } catch(e) { console.error('Balance error', e); }
+  }
+
+  // ── Price ticker ──────────────────────────────────
+  async function loadPrice() {
+    const symbol = document.getElementById('symbol').value || 'BTCUSDT';
+    try {
+      const res = await fetch(`/api/price/${symbol}`);
+      const data = await res.json();
+      if (data.success) {
+        const p = parseFloat(data.price);
+        document.getElementById('tickerPrice').textContent =
+          '$' + p.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('tickerSymbol').textContent = symbol;
+      }
+    } catch(e) {}
+  }
+
+  function updateTicker() {
+    clearInterval(priceInterval);
+    loadPrice();
+    priceInterval = setInterval(loadPrice, 10000);
+  }
+
+  // ── Side toggle ───────────────────────────────────
+  function setSide(side) {
+    currentSide = side;
+    document.querySelectorAll('.side-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.side-btn.${side.toLowerCase()}`).classList.add('active');
+    updateSubmitBtn();
+  }
+
+  // ── Order type tabs ───────────────────────────────
+  function setType(type) {
+    currentType = type;
+    document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const priceField     = document.getElementById('priceField');
+    const stopPriceField = document.getElementById('stopPriceField');
+
+    if (type === 'MARKET') {
+      priceField.classList.add('hidden');
+      stopPriceField.classList.add('hidden');
+    } else if (type === 'LIMIT') {
+      priceField.classList.remove('hidden');
+      stopPriceField.classList.add('hidden');
+    } else if (type === 'STOP') {
+      priceField.classList.remove('hidden');
+      stopPriceField.classList.remove('hidden');
+    }
+    updateSubmitBtn();
+  }
+
+  function updateSubmitBtn() {
+    const btn = document.getElementById('submitBtn');
+    btn.className = `submit-btn ${currentSide.toLowerCase()}`;
+    btn.textContent = `Place ${currentSide} ${currentType} Order`;
+  }
+
+  // ── Place order ───────────────────────────────────
+  async function placeOrder() {
+    const btn = document.getElementById('submitBtn');
+    const symbol   = document.getElementById('symbol').value.trim().toUpperCase();
+    const quantity = document.getElementById('quantity').value;
+    const price    = document.getElementById('price').value;
+    const stopPrice = document.getElementById('stopPrice').value;
+
+    if (!symbol || !quantity) {
+      showToast('Please fill in Symbol and Quantity', 'error');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Placing order...`;
+
+    const payload = {
+      symbol, quantity,
+      side: currentSide,
+      order_type: currentType,
+      time_in_force: 'GTC',
+      price: price || null,
+      stop_price: stopPrice || null,
+    };
+
+    try {
+      const res = await fetch('/api/place-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        addOrderCard(data.order, currentSide, currentType, false);
+        showToast(`✅ Order placed — ID: ${data.order.orderId}`, 'success');
+        loadBalance();
+      } else {
+        addErrorCard(data.error, currentSide, currentType);
+        showToast(`❌ ${data.error}`, 'error');
+      }
+    } catch(e) {
+      showToast('Network error — is the server running?', 'error');
+    }
+
+    btn.disabled = false;
+    updateSubmitBtn();
+  }
+
+  // ── Order cards ───────────────────────────────────
+  function addOrderCard(order, side, type, isError) {
+    const history = document.getElementById('orderHistory');
+    const empty = history.querySelector('.empty-state');
+    if (empty) empty.remove();
+
+    const status    = order.status || 'NEW';
+    const avgPrice  = parseFloat(order.avgPrice || order.price || 0);
+    const execQty   = parseFloat(order.executedQty || 0);
+    const origQty   = parseFloat(order.origQty || 0);
+    const now       = new Date().toLocaleTimeString();
+    const symbol    = order.symbol || '';
+
+    const sideClass  = side.toLowerCase();
+    const icon       = side === 'BUY' ? '▲' : '▼';
+    const badgeClass = status === 'FILLED' ? 'badge-filled' : 'badge-new';
+
+    const card = document.createElement('div');
+    card.className = `order-card ${sideClass}-card`;
+    card.innerHTML = `
+      <div class="order-icon ${sideClass}">${icon}</div>
+      <div class="order-info">
+        <div class="order-title">
+          ${side} ${type} · ${symbol}
+          <span class="order-badge ${badgeClass}">${status}</span>
+        </div>
+        <div class="order-meta">
+          <span><span class="meta-label">Order ID</span><span class="meta-val">${order.orderId}</span></span>
+          <span><span class="meta-label">Qty</span><span class="meta-val">${execQty}/${origQty}</span></span>
+          ${avgPrice > 0 ? `<span><span class="meta-label">Avg Price</span><span class="meta-val">$${avgPrice.toLocaleString('en-US', {minimumFractionDigits:2})}</span></span>` : ''}
+        </div>
+      </div>
+      <div class="order-time">${now}</div>
+    `;
+    history.prepend(card);
+  }
+
+  function addErrorCard(error, side, type) {
+    const history = document.getElementById('orderHistory');
+    const empty = history.querySelector('.empty-state');
+    if (empty) empty.remove();
+
+    const now = new Date().toLocaleTimeString();
+    const card = document.createElement('div');
+    card.className = 'order-card error-card';
+    card.innerHTML = `
+      <div class="order-icon err">✕</div>
+      <div class="order-info">
+        <div class="order-title">
+          Failed: ${side} ${type}
+          <span class="order-badge badge-error">ERROR</span>
+        </div>
+        <div class="order-meta">
+          <span><span class="meta-label">Reason</span><span class="meta-val" style="color:var(--red)">${error}</span></span>
+        </div>
+      </div>
+      <div class="order-time">${now}</div>
+    `;
+    history.prepend(card);
+  }
+
+  function clearHistory() {
+    document.getElementById('orderHistory').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">No orders yet — place your first order</div>
+      </div>`;
+  }
+
+  // ── Toast ─────────────────────────────────────────
+  function showToast(msg, type) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+  }
+</script>
+</body>
+</html>

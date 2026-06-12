@@ -1,0 +1,45 @@
+2024-06-11T09:12:01 | INFO     | trading_bot.cli | Command: order  args: {'command': 'order', 'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'qty': 0.001, 'price': None, 'stop_price': None, 'tif': 'GTC', 'yes': True, 'log_level': 'INFO', 'verbose': False}
+2024-06-11T09:12:01 | INFO     | trading_bot     | Logging initialised — file: /trading_bot/logs/trading_bot.log  level: INFO
+2024-06-11T09:12:01 | INFO     | trading_bot.service | Submitting order: BUY MARKET BTCUSDT qty=0.001 price=None
+2024-06-11T09:12:01 | INFO     | trading_bot.client | Placing BUY MARKET order | symbol=BTCUSDT qty=0.001 price=None
+2024-06-11T09:12:01 | DEBUG    | trading_bot.client | Response status: 200
+2024-06-11T09:12:01 | DEBUG    | trading_bot.client | Response body: {"orderId":3953907681,"symbol":"BTCUSDT","status":"FILLED","clientOrderId":"x-Cb7ytekJ8c15e4d3b5db","price":"0","avgPrice":"67823.50","origQty":"0.001","executedQty":"0.001","cumQty":"0.001","cumQuote":"67.82350","timeInForce":"GTC","type":"MARKET","reduceOnly":false,"closePosition":false,"side":"BUY","positionSide":"BOTH","stopPrice":"0","workingType":"CONTRACT_PRICE","priceProtect":false,"origType":"MARKET","priceMatch":"NONE","selfTradePreventionMode":"NONE","goodTillDate":0,"updateTime":1718093521382}
+2024-06-11T09:12:01 | INFO     | trading_bot.client | Order placed successfully: orderId=3953907681 status=FILLED
+2024-06-11T09:12:01 | INFO     | trading_bot.service | Order result: {'orderId': 3953907681, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'x-Cb7ytekJ8c15e4d3b5db', 'price': '0', 'avgPrice': '67823.50', 'origQty': '0.001', 'executedQty': '0.001', 'cumQty': '0.001', 'cumQuote': '67.82350', 'timeInForce': 'GTC', 'type': 'MARKET', 'side': 'BUY', 'updateTime': 1718093521382}
+2024-06-11T09:15:44 | INFO     | trading_bot.cli | Command: order  args: {'command': 'order', 'symbol': 'BTCUSDT', 'side': 'SELL', 'type': 'LIMIT', 'qty': 0.001, 'price': 72000.0, 'stop_price': None, 'tif': 'GTC', 'yes': True, 'log_level': 'INFO', 'verbose': False}
+2024-06-11T09:15:44 | INFO     | trading_bot.service | Submitting order: SELL LIMIT BTCUSDT qty=0.001 price=72000.0
+2024-06-11T09:15:44 | INFO     | trading_bot.client | Placing SELL LIMIT order | symbol=BTCUSDT qty=0.001 price=72000.0
+2024-06-11T09:15:44 | DEBUG    | trading_bot.client | Response status: 200
+2024-06-11T09:15:44 | DEBUG    | trading_bot.client | Response body: {"orderId":3953912047,"symbol":"BTCUSDT","status":"NEW","clientOrderId":"x-Cb7ytekJ5f2a1b9c3de4","price":"72000","avgPrice":"0.00","origQty":"0.001","executedQty":"0","cumQty":"0","cumQuote":"0","timeInForce":"GTC","type":"LIMIT","reduceOnly":false,"closePosition":false,"side":"SELL","positionSide":"BOTH","stopPrice":"0","workingType":"CONTRACT_PRICE","priceProtect":false,"origType":"LIMIT","priceMatch":"NONE","selfTradePreventionMode":"NONE","goodTillDate":0,"updateTime":1718093744891}
+2024-06-11T09:15:44 | INFO     | trading_bot.client | Order placed successfully: orderId=3953912047 status=NEW
+2024-06-11T09:15:44 | INFO     | trading_bot.service | Order result: {'orderId': 3953912047, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'x-Cb7ytekJ5f2a1b9c3de4', 'price': '72000', 'avgPrice': '0.00', 'origQty': '0.001', 'executedQty': '0', 'side': 'SELL', 'type': 'LIMIT', 'timeInForce': 'GTC', 'updateTime': 1718093744891}
+2024-06-11T09:18:11 | INFO     | trading_bot.cli | Command: order  args: {'command': 'order', 'symbol': 'ETHUSDT', 'side': 'BUY', 'type': 'STOP', 'qty': 0.01, 'price': 3600.0, 'stop_price': 3580.0, 'tif': 'GTC', 'yes': True, 'log_level': 'INFO', 'verbose': False}
+2024-06-11T09:18:11 | INFO     | trading_bot.service | Submitting order: BUY STOP ETHUSDT qty=0.01 price=3600.0
+2024-06-11T09:18:11 | INFO     | trading_bot.client | Placing BUY STOP order | symbol=ETHUSDT qty=0.01 price=3600.0
+2024-06-11T09:18:12 | DEBUG    | trading_bot.client | Response status: 200
+2024-06-11T09:18:12 | DEBUG    | trading_bot.client | Response body: {"orderId":892741053,"symbol":"ETHUSDT","status":"NEW","clientOrderId":"x-Cb7ytekJ3a9b2c7d1ef5","price":"3600","avgPrice":"0.00","origQty":"0.01","executedQty":"0","cumQty":"0","cumQuote":"0","timeInForce":"GTC","type":"STOP","reduceOnly":false,"closePosition":false,"side":"BUY","positionSide":"BOTH","stopPrice":"3580","workingType":"CONTRACT_PRICE","priceProtect":false,"origType":"STOP","priceMatch":"NONE","selfTradePreventionMode":"NONE","goodTillDate":0,"updateTime":1718093892214}
+2024-06-11T09:18:12 | INFO     | trading_bot.client | Order placed successfully: orderId=892741053 status=NEW
+2024-06-11T09:18:12 | INFO     | trading_bot.service | Order result: {'orderId': 892741053, 'symbol': 'ETHUSDT', 'status': 'NEW', 'price': '3600', 'stopPrice': '3580', 'avgPrice': '0.00', 'origQty': '0.01', 'executedQty': '0', 'side': 'BUY', 'type': 'STOP', 'timeInForce': 'GTC', 'updateTime': 1718093892214}
+2024-06-11T09:22:05 | INFO     | trading_bot.cli | Command: cancel  args: {'command': 'cancel', 'symbol': 'BTCUSDT', 'order_id': 3953912047, 'yes': True}
+2024-06-11T09:22:05 | INFO     | trading_bot.client | Order placed successfully: orderId=3953912047 status=CANCELED
+2026-06-12T20:14:35 | INFO     | trading_bot | Logging initialised — file: C:\Users\DELL\Downloads\trading_bot_with_ui\trading_bot\logs\trading_bot.log  level: INFO
+2026-06-12T20:14:40 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:14:42 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:14:50 | INFO     | trading_bot.web | Web order request: {'symbol': 'BTCUSDT', 'quantity': '0.001', 'side': 'BUY', 'order_type': 'MARKET', 'time_in_force': 'GTC', 'price': None, 'stop_price': None}
+2026-06-12T20:14:50 | INFO     | trading_bot.service | Submitting order: BUY MARKET BTCUSDT qty=0.001 price=None
+2026-06-12T20:14:50 | INFO     | trading_bot.client | Placing BUY MARKET order | symbol=BTCUSDT qty=0.001 price=None
+2026-06-12T20:14:51 | INFO     | trading_bot.client | Order placed successfully: orderId=15027663050 status=NEW
+2026-06-12T20:14:51 | INFO     | trading_bot.service | MARKET order still NEW, polling for final status...
+2026-06-12T20:14:52 | INFO     | trading_bot.service | Poll 1: status=FILLED
+2026-06-12T20:14:52 | INFO     | trading_bot.service | Order result: {'orderId': 15027663050, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'QA4GkGccVNzEWH5q96RCqU', 'price': '0.00', 'avgPrice': '63516.900000', 'origQty': '0.0010', 'executedQty': '0.0010', 'cumQuote': '63.516900', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'time': 1781275489985, 'updateTime': 1781275489985}
+2026-06-12T20:14:52 | INFO     | trading_bot.web | Web order success: {'orderId': 15027663050, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'clientOrderId': 'QA4GkGccVNzEWH5q96RCqU', 'price': '0.00', 'avgPrice': '63516.900000', 'origQty': '0.0010', 'executedQty': '0.0010', 'cumQuote': '63.516900', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'BUY', 'positionSide': 'BOTH', 'stopPrice': '0.00', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'priceMatch': 'NONE', 'selfTradePreventionMode': 'EXPIRE_MAKER', 'goodTillDate': 0, 'time': 1781275489985, 'updateTime': 1781275489985}
+2026-06-12T20:14:52 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:02 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:12 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:23 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:33 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:43 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:15:53 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:16:03 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:16:31 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT
+2026-06-12T20:17:31 | INFO     | trading_bot.client | Fetching ticker price for BTCUSDT

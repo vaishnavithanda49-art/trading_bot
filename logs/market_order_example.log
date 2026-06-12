@@ -1,0 +1,9 @@
+2024-06-11T09:12:01 | INFO     | trading_bot      | Logging initialised — file: logs/trading_bot.log  level: INFO
+2024-06-11T09:12:01 | INFO     | trading_bot.cli  | Command: order  args: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'qty': 0.001, 'price': None, 'stop_price': None, 'tif': 'GTC', 'yes': True}
+2024-06-11T09:12:01 | INFO     | trading_bot.service | Submitting order: BUY MARKET BTCUSDT qty=0.001 price=None
+2024-06-11T09:12:01 | INFO     | trading_bot.client  | Placing BUY MARKET order | symbol=BTCUSDT qty=0.001 price=None
+2024-06-11T09:12:01 | DEBUG    | trading_bot.client  | Order params: {'symbol': 'BTCUSDT', 'side': 'BUY', 'type': 'MARKET', 'quantity': 0.001, 'timestamp': 1718093521000, 'signature': 'a3f9...redacted'}
+2024-06-11T09:12:01 | DEBUG    | trading_bot.client  | Response status: 200
+2024-06-11T09:12:01 | DEBUG    | trading_bot.client  | Response body: {"orderId":3953907681,"symbol":"BTCUSDT","status":"FILLED","clientOrderId":"x-Cb7ytekJ8c15e4d3b5db","price":"0","avgPrice":"67823.50","origQty":"0.001","executedQty":"0.001","cumQty":"0.001","cumQuote":"67.82350","timeInForce":"GTC","type":"MARKET","side":"BUY","updateTime":1718093521382}
+2024-06-11T09:12:01 | INFO     | trading_bot.client  | Order placed successfully: orderId=3953907681 status=FILLED
+2024-06-11T09:12:01 | INFO     | trading_bot.service | Order result: {'orderId': 3953907681, 'symbol': 'BTCUSDT', 'status': 'FILLED', 'avgPrice': '67823.50', 'origQty': '0.001', 'executedQty': '0.001', 'side': 'BUY', 'type': 'MARKET'}
